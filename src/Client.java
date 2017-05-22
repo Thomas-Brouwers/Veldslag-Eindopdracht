@@ -1,89 +1,96 @@
-import java.io.*;
-import java.net.*;
-import javafx.application.Application;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 
-public class Client extends Application {
-    // IO streams
-    DataOutputStream toServer = null;
-    DataInputStream fromServer = null;
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
-    @Override // Override the start method in the Application class
-    public void start(Stage primaryStage) {
-        // Panel p to hold the label and text field
-        BorderPane paneForTextField = new BorderPane();
-        paneForTextField.setPadding(new Insets(5, 5, 5, 5));
-        paneForTextField.setStyle("-fx-border-color: green");
-        paneForTextField.setLeft(new Label("Enter a radius: "));
 
-        TextField tf = new TextField();
-        tf.setAlignment(Pos.BOTTOM_RIGHT);
-        paneForTextField.setCenter(tf);
+public class Client extends JFrame {
+private int width = 5;
+private int height = 5;
+private boolean started = false;
 
-        BorderPane mainPane = new BorderPane();
-        // Text area to display contents
-        TextArea ta = new TextArea();
-        mainPane.setCenter(new ScrollPane(ta));
-        mainPane.setTop(paneForTextField);
+sButton buttons[]=new sButton[25];
 
-        // Create a scene and place it in the stage
-        Scene scene = new Scene(mainPane, 450, 200);
-        primaryStage.setTitle("Client"); // Set the stage title
-        primaryStage.setScene(scene); // Place the scene in the stage
-        primaryStage.show(); // Display the stage
+public Client(){
+    super("Veldslagje");
+    this.setDefaultCloseOperation(3);
+    this.setSize(1000,1000);
 
-        tf.setOnAction(e -> {
-            try {
-                // Get the radius from the text field
-                double radius = Double.parseDouble(tf.getText().trim());
+    JPanel content = new JPanel(new BorderLayout());
+    this.add(content);
 
-                // Send the radius to the server
-                toServer.writeDouble(radius);
-                toServer.flush();
+    JPanel bar = new JPanel(new FlowLayout());
+    content.add(bar, BorderLayout.PAGE_START);
 
-                // Get area from the server
-                double area = fromServer.readDouble();
+    String[] playerStrings = { "Player 1", "Player 2"};
+    JComboBox players = new JComboBox(playerStrings);
+    players.setSelectedIndex(1);
+    bar.add(players, BorderLayout.PAGE_START);
 
-                // Display to the text area
-                ta.appendText("Radius is " + radius + "\n");
-                ta.appendText("Area received from the server is "
-                        + area + '\n');
-            }
-            catch (IOException ex) {
-                System.err.println(ex);
-            }
-        });
-
-        try {
-            // Create a socket to connect to the server
-            Socket socket = new Socket("localhost", 8000);
-            // Socket socket = new Socket("130.254.204.36", 8000);
-            // Socket socket = new Socket("drake.Armstrong.edu", 8000);
-
-            // Create an input stream to receive data from the server
-            fromServer = new DataInputStream(socket.getInputStream());
-
-            // Create an output stream to send data to the server
-            toServer = new DataOutputStream(socket.getOutputStream());
+    this.setContentPane(content);
+    JButton connect = new JButton("Connect");
+    connect.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println(players.getSelectedItem().toString());
+            //zend schip info
+            started = true;
         }
-        catch (IOException ex) {
-            ta.appendText(ex.toString() + '\n');
+    });
+    bar.add(connect, BorderLayout.PAGE_START);
+
+    JPanel battle = new JPanel(new GridLayout(5,5));
+    content.add(battle,BorderLayout.CENTER);
+
+    for(int i=0;i<25;i++){
+        buttons[i]=new sButton(i);
+        //buttons[i].addActionListener(this);
+
+        battle.add(buttons[i]);
+    }
+/*
+        ArrayList yList = new ArrayList();
+        for (int x2=0; x2<5; x2++){
+            ArrayList xList = new ArrayList();
+
+            for
+
+            yList.add(x2, xList);
         }
+*/
+
+    this.setVisible(true);
+}
+
+
+    public static void main(String[] args) {
+        new Client();
     }
 
-    /**
-     * The main method is only needed for the IDE with limited
-     * JavaFX support. Not needed for running from the command line.
-     */
-    public static void main(String[] args) {
-        launch(args);
+    class sButton extends JButton implements ActionListener {
+    ImageIcon ship, emptyXY,hitShip;
+
+    int position;
+    byte isOccupied=0;
+    //0=empty, 1=ship, 2=hitShip
+    //JButton button = null;
+
+    public sButton(int position){
+        emptyXY = new ImageIcon("resource/grass128.png");
+        this.position=position;
+        this.addActionListener(this);
+    }
+        
+        public int getPosition() {
+            return position;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println(getPosition());
+        }
     }
 }

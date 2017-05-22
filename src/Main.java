@@ -23,7 +23,7 @@ public class Main extends Application {
         new Thread( () -> {
             try {
                 // Create a server socket
-                ServerSocket serverSocket = new ServerSocket(8000);
+                ServerSocket serverSocket = new ServerSocket(9696);
                 Platform.runLater(() ->
                         ta.appendText("Server started at " + new Date() + '\n'));
 
