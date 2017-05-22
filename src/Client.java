@@ -1,4 +1,5 @@
 
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -14,10 +15,10 @@ private boolean started = false;
 
 sButton buttons[]=new sButton[25];
 
-public Client(){
+public Client() {
     super("Veldslagje");
     this.setDefaultCloseOperation(3);
-    this.setSize(1000,1000);
+    this.setSize(1000, 1000);
 
     JPanel content = new JPanel(new BorderLayout());
     this.add(content);
@@ -25,7 +26,7 @@ public Client(){
     JPanel bar = new JPanel(new FlowLayout());
     content.add(bar, BorderLayout.PAGE_START);
 
-    String[] playerStrings = { "Player 1", "Player 2"};
+    String[] playerStrings = {"Player 1", "Player 2"};
     JComboBox players = new JComboBox(playerStrings);
     players.setSelectedIndex(1);
     bar.add(players, BorderLayout.PAGE_START);
@@ -42,11 +43,11 @@ public Client(){
     });
     bar.add(connect, BorderLayout.PAGE_START);
 
-    JPanel battle = new JPanel(new GridLayout(5,5));
-    content.add(battle,BorderLayout.CENTER);
+    JPanel battle = new JPanel(new GridLayout(5, 5));
+    content.add(battle, BorderLayout.CENTER);
 
-    for(int i=0;i<25;i++){
-        buttons[i]=new sButton(i);
+    for (int i = 0; i < 25; i++) {
+        buttons[i] = new sButton(i);
         //buttons[i].addActionListener(this);
 
         battle.add(buttons[i]);
@@ -64,7 +65,6 @@ public Client(){
 
     this.setVisible(true);
 }
-
 
     public static void main(String[] args) {
         new Client();
