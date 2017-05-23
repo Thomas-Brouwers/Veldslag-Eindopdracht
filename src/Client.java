@@ -16,13 +16,14 @@ private boolean started = false;
 private int limit = 5;
 private int[] soldiers = new int[limit];
 private int index;
+private String logtxt="cvxcvkm";
 sButton buttons[]=new sButton[25];
 
 public Client() {
     //Initiating Frame
     super("Veldslagje");
     this.setDefaultCloseOperation(3);
-    Dimension size = new Dimension(350,400);
+    Dimension size = new Dimension(450,400);
     this.setSize(size);
     this.setPreferredSize(size);
     //Content Borderlayout
@@ -81,6 +82,17 @@ public Client() {
         battle.add(buttons[i]);
     }
 
+    //Creating sidepanel with JLabel enInf
+    JPanel sidePanel = new JPanel(new BorderLayout());
+    Dimension sPd = new Dimension(150,300);
+    sidePanel.setPreferredSize(sPd);
+    content.add(sidePanel,BorderLayout.EAST);
+
+    JLabel logHeader = new JLabel("Log:");
+    sidePanel.add(logHeader,BorderLayout.NORTH);
+
+    JLabel logHeader2 = new JLabel("<html>Geraakte Soldaten:<br> Test</html>");
+    sidePanel.add(logHeader2, BorderLayout.CENTER);
     this.pack();
 
     this.setResizable(false);
