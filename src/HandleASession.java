@@ -12,35 +12,27 @@ import java.net.Socket;
 
         private Socket player1;
         private Socket player2;
-
-        // Create and initialize cells
-        private char[][] cell = new char[3][3];
+        private int[] isOccupiedPlayer1 = new int[25];
+        private int[] isOccupiedPlayer2 = new int[25];
 
         private DataInputStream fromPlayer1;
         private DataOutputStream toPlayer1;
         private DataInputStream fromPlayer2;
         private DataOutputStream toPlayer2;
 
-        // Continue to play
+
         private boolean continueToPlay = true;
 
-        /**
-         * Construct a thread
-         */
+
         public HandleASession(Socket player1, Socket player2) {
             this.player1 = player1;
             this.player2 = player2;
-
-            // Initialize cells
-            for (int i = 0; i < 5; i++)
-                for (int j = 0; j < 5; j++)
-                    cell[i][j] = ' ';
         }
 
         @Override
         public void run() {
             try {
-                // Create data input and output streams
+
                 DataInputStream fromPlayer1 = new DataInputStream(
                         player1.getInputStream());
                 DataOutputStream toPlayer1 = new DataOutputStream(
@@ -50,10 +42,25 @@ import java.net.Socket;
                 DataOutputStream toPlayer2 = new DataOutputStream(
                         player2.getOutputStream());
 
-                // Write anything to notify player 1 to start
-                // This is just to let player 1 know to start
+                toPlayer1.writeUTF("Zet jouw soldaten neer");
+                toPlayer2.writeUTF("Zet jouw soldaten neer");
+
+                for(int i = 0; i< 25; i++)
+                    isOccupiedPlayer1[i] = fromPlayer1.readInt();
+
+                for(int j = 0; j< 25; j++)
+                    isOccupiedPlayer2[j] = fromPlayer2.readInt();
+
                 toPlayer1.writeInt(1);
 
+                while(true)
+                {
+                    int movePlayer1 = fromPlayer1.readInt();
+                    if(isOccupiedPlayer2[movePlayer1] == 0)
+                        isOccupiedPlayer2[movePlayer1] = 3;
+                    else if(isOccupiedPlayer2[movePlayer1] == 1)
+                        isOccupiedPlayer2[movePlayer1] = 2;
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();

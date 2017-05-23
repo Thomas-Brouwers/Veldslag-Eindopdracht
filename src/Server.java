@@ -9,20 +9,20 @@ import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
 public class Server extends Application {
-    @Override // Override the start method in the Application class
+    @Override
     public void start(Stage primaryStage) {
-        // Text area for displaying contents
+
         TextArea ta = new TextArea();
 
-        // Create a scene and place it in the stage
+
         Scene scene = new Scene(new ScrollPane(ta), 450, 200);
-        primaryStage.setTitle("Server"); // Set the stage title
-        primaryStage.setScene(scene); // Place the scene in the stage
-        primaryStage.show(); // Display the stage
+        primaryStage.setTitle("Server");
+        primaryStage.setScene(scene);
+        primaryStage.show();
 
         new Thread( () -> {
             try {
-                // Create a server socket
+
                 ServerSocket serverSocket = new ServerSocket(8000);
                 Platform.runLater(() ->
                         ta.appendText("Server started at " + new Date() + '\n'));
@@ -31,7 +31,7 @@ public class Server extends Application {
                     Platform.runLater(() -> ta.appendText(new Date() +
                             ": Wait for players to join session " + '\n'));
 
-                    // Listen for a connection request
+
                     Socket player1 = serverSocket.accept();
 
                     Platform.runLater(() -> {
@@ -58,7 +58,7 @@ public class Server extends Application {
                             ta.appendText(new Date() +
                                     ": Start a thread for session "  + '\n'));
 
-                    // Launch a new thread for this session of two players
+
                     new Thread(new HandleASession(player1, player2)).start();
                 }
             }
@@ -70,10 +70,7 @@ public class Server extends Application {
 
 
 
-    /**
-     * The main method is only needed for the IDE with limited
-     * JavaFX support. Not needed for running from the command line.
-     */
+
     public static void main(String[] args) {
         launch(args);
     }
