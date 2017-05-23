@@ -13,9 +13,9 @@ public class Client extends JFrame {
 private int width = 5;
 private int height = 5;
 private boolean started = false;
-private int[] soldiers = new int[5];
+private int limit = 5;
+private int[] soldiers = new int[limit];
 private int index;
-
 sButton buttons[]=new sButton[25];
 
 public Client() {
@@ -55,7 +55,7 @@ public Client() {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(started==false){
-                soldiers=new int[5];
+                soldiers=new int[limit];
                 index=0;
                 for (int q=0; q<25 ;q++){
                     buttons[q].setImage(0);
@@ -65,6 +65,11 @@ public Client() {
         }
     });
     bar.add(reset, BorderLayout.NORTH);
+    //Creating top label
+    JLabel toplabel = new JLabel("Zet je soldaten neer!");
+    bar.add(toplabel);
+
+
     //Creating button grid
     JPanel battle = new JPanel(new GridLayout(5, 5));
     content.add(battle, BorderLayout.CENTER);
@@ -122,7 +127,7 @@ public Client() {
                 break;
             case 2:
                 try {
-                    Image hitSol = ImageIO.read(getClass().getResource("resource/sol.png"));
+                    Image hitSol = ImageIO.read(getClass().getResource("resource/hitSol.png"));
                     setIcon(new ImageIcon(hitSol));
                 } catch (Exception ex) {
                     System.out.println(ex);
@@ -158,7 +163,7 @@ public Client() {
 
 
     public void CoordinatePressed(int position){
-        if(index<5&&started==false&&buttons[position].isOccupied==0){
+        if(index<limit&&started==false&&buttons[position].isOccupied==0){
         soldiers[index]=position;
         buttons[position].setOccupied(1);
         index++;}
