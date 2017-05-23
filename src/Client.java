@@ -1,5 +1,6 @@
 
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -37,8 +38,8 @@ public Client() {
     bar.add(players, BorderLayout.PAGE_START);*/
     //Creating Connect button
     this.setContentPane(content);
-    JButton connect = new JButton("Connect");
-    connect.addActionListener(new ActionListener() {
+    JButton readybtn = new JButton("Ready");
+    readybtn.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             //System.out.println(players.getSelectedItem().toString());
@@ -47,15 +48,20 @@ public Client() {
             started = true;
         }
     });
-    bar.add(connect, BorderLayout.NORTH);
+    bar.add(readybtn, BorderLayout.NORTH);
     //Creating reset button
     JButton reset = new JButton("Reset Selection");
     reset.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(started==false){
-            soldiers=new int[5];
-            index=0;}
+                soldiers=new int[5];
+                index=0;
+                for (int q=0; q<25 ;q++){
+                    buttons[q].setImage(0);
+                    buttons[q].setOccupiedMod(0);
+                }
+            }
         }
     });
     bar.add(reset, BorderLayout.NORTH);
@@ -69,16 +75,7 @@ public Client() {
 
         battle.add(buttons[i]);
     }
-/*
-        ArrayList yList = new ArrayList();
-        for (int x2=0; x2<5; x2++){
-            ArrayList xList = new ArrayList();
 
-            for
-
-            yList.add(x2, xList);
-        }
-*/
     this.pack();
 
     this.setResizable(false);
@@ -94,15 +91,45 @@ public Client() {
     ImageIcon ship, emptyXY,hitShip;
 
     int position;
-    byte isOccupied=0;
+    int isOccupied=0;
     //0=empty, 1=sol, 2=hitSol
     //JButton button = null;
 
     //Custom Button
     public sButton(int position){
-        emptyXY = new ImageIcon("resource/grass128.png");
         this.position=position;
         this.addActionListener(this);
+        setImage(isOccupied);
+    }
+
+    public void setImage(int isOccupied) {
+        switch (isOccupied) {
+            case 0:
+                try {
+                    Image grs = ImageIO.read(getClass().getResource("resource/gras.png"));
+                    setIcon(new ImageIcon(grs));
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+                break;
+            case 1:
+                try {
+                    Image sol = ImageIO.read(getClass().getResource("resource/sol.png"));
+                    setIcon(new ImageIcon(sol));
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+                break;
+            case 2:
+                try {
+                    Image hitSol = ImageIO.read(getClass().getResource("resource/sol.png"));
+                    setIcon(new ImageIcon(hitSol));
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+                break;
+
+        }
     }
         
         public int getPosition() {
@@ -115,11 +142,25 @@ public Client() {
             CoordinatePressed(getPosition());
 
         }
+
+        public void setOccupied(int state){
+            isOccupied = state;
+            setImage(isOccupied);
+            System.out.println("Pressed "+isOccupied);
+            repaint();
+        }
+
+        public void setOccupiedMod (int occ){
+            isOccupied = occ;
+        }
     }
 
+
+
     public void CoordinatePressed(int position){
-        if(index<5&&started==false){
+        if(index<5&&started==false&&buttons[position].isOccupied==0){
         soldiers[index]=position;
+        buttons[position].setOccupied(1);
         index++;}
     }
 }
