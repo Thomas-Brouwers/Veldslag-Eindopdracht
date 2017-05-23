@@ -12,37 +12,54 @@ public class Client extends JFrame {
 private int width = 5;
 private int height = 5;
 private boolean started = false;
+private int[] soldiers = new int[5];
+private int index;
 
 sButton buttons[]=new sButton[25];
 
 public Client() {
+    //Initiating Frame
     super("Veldslagje");
     this.setDefaultCloseOperation(3);
-    this.setSize(1000, 1000);
-
+    Dimension size = new Dimension(350,400);
+    this.setSize(size);
+    this.setPreferredSize(size);
+    //Content Borderlayout
     JPanel content = new JPanel(new BorderLayout());
     this.add(content);
-
+    //Initiating Top bar
     JPanel bar = new JPanel(new FlowLayout());
     content.add(bar, BorderLayout.PAGE_START);
-
+    /*//Creating top bar ComboBox
     String[] playerStrings = {"Player 1", "Player 2"};
     JComboBox players = new JComboBox(playerStrings);
     players.setSelectedIndex(1);
-    bar.add(players, BorderLayout.PAGE_START);
-
+    bar.add(players, BorderLayout.PAGE_START);*/
+    //Creating Connect button
     this.setContentPane(content);
     JButton connect = new JButton("Connect");
     connect.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println(players.getSelectedItem().toString());
+            //System.out.println(players.getSelectedItem().toString());
             //zend schip info
+            System.out.println(" 1: "+soldiers[0]+" 2: "+soldiers[1]+" 3: "+soldiers[2]+" 4: "+soldiers[3]+" 5: "+soldiers[4]);
             started = true;
         }
     });
-    bar.add(connect, BorderLayout.PAGE_START);
-
+    bar.add(connect, BorderLayout.NORTH);
+    //Creating reset button
+    JButton reset = new JButton("Reset Selection");
+    reset.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(started==false){
+            soldiers=new int[5];
+            index=0;}
+        }
+    });
+    bar.add(reset, BorderLayout.NORTH);
+    //Creating button grid
     JPanel battle = new JPanel(new GridLayout(5, 5));
     content.add(battle, BorderLayout.CENTER);
 
@@ -62,6 +79,9 @@ public Client() {
             yList.add(x2, xList);
         }
 */
+    this.pack();
+
+    this.setResizable(false);
 
     this.setVisible(true);
 }
@@ -75,9 +95,10 @@ public Client() {
 
     int position;
     byte isOccupied=0;
-    //0=empty, 1=ship, 2=hitShip
+    //0=empty, 1=sol, 2=hitSol
     //JButton button = null;
 
+    //Custom Button
     public sButton(int position){
         emptyXY = new ImageIcon("resource/grass128.png");
         this.position=position;
@@ -91,6 +112,14 @@ public Client() {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println(getPosition());
+            CoordinatePressed(getPosition());
+
         }
+    }
+
+    public void CoordinatePressed(int position){
+        if(index<5&&started==false){
+        soldiers[index]=position;
+        index++;}
     }
 }
