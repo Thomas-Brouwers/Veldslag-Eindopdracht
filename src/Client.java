@@ -2,11 +2,13 @@
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 
 
 public class Client extends JFrame {
@@ -16,7 +18,16 @@ private boolean started = false;
 private int limit = 5;
 private int[] soldiers = new int[limit];
 private int index;
-private String logtxt="cvxcvkm";
+private String logtxt="";
+JLabel toplabel;
+//srvr var
+private DataInputStream fromServer;
+private DataOutputStream toServer;
+private String host = "localhost";
+private boolean continueToPlay = true;
+private boolean waiting = true;
+private int playerMove;
+
 sButton buttons[]=new sButton[25];
 
 public Client() {
@@ -45,7 +56,16 @@ public Client() {
         public void actionPerformed(ActionEvent e) {
             //System.out.println(players.getSelectedItem().toString());
             //zend schip info
-            System.out.println(" 1: "+soldiers[0]+" 2: "+soldiers[1]+" 3: "+soldiers[2]+" 4: "+soldiers[3]+" 5: "+soldiers[4]);
+            //System.out.println(" 1: "+soldiers[0]+" 2: "+soldiers[1]+" 3: "+soldiers[2]+" 4: "+soldiers[3]+" 5: "+soldiers[4]);
+
+            for (int c = 0; c<25; c++){
+                try{
+                sendMove(buttons[c].getIsOccupied());} catch (IOException ex){
+                    ex.printStackTrace();
+                }
+                System.out.println(buttons[c].getPosition() + "I"+ buttons[c].getIsOccupied());
+            }
+
             started = true;
         }
     });
@@ -67,7 +87,7 @@ public Client() {
     });
     bar.add(reset, BorderLayout.NORTH);
     //Creating top label
-    JLabel toplabel = new JLabel("Zet je soldaten neer!");
+    toplabel = new JLabel("Zet je soldaten neer!");
     bar.add(toplabel);
 
 
@@ -98,11 +118,88 @@ public Client() {
     this.setResizable(false);
 
     this.setVisible(true);
+
+    connectToServer();
 }
+
+    private void connectToServer() {
+        try {
+            // Create a socket to connect to the server
+            Socket socket = new Socket(host, 8000);
+
+            // Create an input stream to receive data from the server
+            fromServer = new DataInputStream(socket.getInputStream());
+
+            // Create an output stream to send data to the server
+            toServer = new DataOutputStream(socket.getOutputStream());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    new Thread(() -> {
+            try{
+                String player = fromServer.readUTF();
+
+                while (continueToPlay) {
+                    if (player.equals("player 1")) {
+                        waitForPlayerAction(); // Wait for player 1 to move
+                        sendMove(playerMove); // Send the move to the server
+                        receiveInfoFromServer(); // Receive info from the server
+                    }
+                    else if (player.equals("player 2")) {
+                        receiveInfoFromServer(); // Receive info from the server
+                        waitForPlayerAction(); // Wait for player 2 to move
+                        sendMove(playerMove); // Send player 2's move to the server
+                    }
+                }
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+    }).start();
+
+}
+
+
+    private void waitForPlayerAction() throws InterruptedException {
+        while (waiting) {
+            Thread.sleep(100);
+        }
+
+        waiting = true;
+    }
+
+    private void sendMove(int position) throws IOException {
+        toServer.writeInt(position); // Send the selected row
+    }
+
+    private void receiveInfoFromServer() throws IOException{
+    String status = fromServer.readUTF();
+
+    if (status.equals("je hebt gewonnen")){
+        toplabel.setText("Je hebt gewonnen!");
+    }else if(status.equals("je hebt verloren")){
+        toplabel.setText("Je hebt verloren!");
+    }
+
+
+    }
+
 
     public static void main(String[] args) {
         new Client();
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     class sButton extends JButton implements ActionListener {
     ImageIcon ship, emptyXY,hitShip;
@@ -111,6 +208,7 @@ public Client() {
     int isOccupied=0;
     //0=empty, 1=sol, 2=hitSol
     //JButton button = null;
+
 
     //Custom Button
     public sButton(int position){
@@ -156,8 +254,13 @@ public Client() {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println(getPosition());
-            CoordinatePressed(getPosition());
+            soldierSelect(getPosition());
+            waiting=false;
+            playerMove=getPosition();
+        }
 
+        public int getIsOccupied() {
+            return isOccupied;
         }
 
         public void setOccupied(int state){
@@ -174,10 +277,14 @@ public Client() {
 
 
 
-    public void CoordinatePressed(int position){
+    public void soldierSelect(int position){
         if(index<limit&&started==false&&buttons[position].isOccupied==0){
         soldiers[index]=position;
         buttons[position].setOccupied(1);
         index++;}
     }
+
+    /*public int coordinatePressed(int position){
+        return position;
+    }*/
 }

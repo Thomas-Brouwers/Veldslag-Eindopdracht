@@ -42,15 +42,16 @@ import java.net.Socket;
             DataOutputStream toPlayer2 = new DataOutputStream(
                     player2.getOutputStream());
 
-            toPlayer1.writeUTF("Zet jouw soldaten neer");
-            toPlayer2.writeUTF("Zet jouw soldaten neer");
 
-            for (int i = 0; i < 25; i++)
+            for (int i = 0; i < 25; i++) {
                 isOccupiedPlayer1[i] = fromPlayer1.readInt();
-
-            for (int j = 0; j < 25; j++)
+                System.out.println(i + "I" + isOccupiedPlayer1[i]);
+            }
+            System.out.println(" ");
+            for (int j = 0; j < 25; j++) {
                 isOccupiedPlayer2[j] = fromPlayer2.readInt();
-
+                System.out.println(isOccupiedPlayer2[j]);
+            }
             toPlayer1.writeInt(1);
 
             while (true) {
@@ -61,8 +62,8 @@ import java.net.Socket;
                     isOccupiedPlayer2[movePlayer1] = 2;
 
                 if (isWon("player 1")) {
-                    toPlayer1.writeUTF("speler 1 heeft gewonnen");
-                    toPlayer2.writeUTF("speler 1 heeft gewonnen");
+                    toPlayer1.writeUTF("je hebt gewonnen");
+                    toPlayer2.writeUTF("je hebt verloren");
                     sendMove(toPlayer2, movePlayer1);
                     break; // Break the loop
                 } else {
