@@ -84,7 +84,7 @@ public Client() {
 
     //Creating sidepanel with JLabel enInf
     JPanel sidePanel = new JPanel(new BorderLayout());
-    Dimension sPd = new Dimension(150,300);
+    Dimension sPd = new Dimension(125,300);
     sidePanel.setPreferredSize(sPd);
     content.add(sidePanel,BorderLayout.EAST);
 
