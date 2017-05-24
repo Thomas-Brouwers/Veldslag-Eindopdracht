@@ -24,7 +24,7 @@ JLabel toplabel;
 private DataInputStream fromServer;
 private DataOutputStream toServer;
 private String host = "localhost";
-private boolean continueToPlay = true;
+private boolean continueToPlay = false;
 private boolean waiting = true;
 private int playerMove;
 
@@ -65,7 +65,7 @@ public Client() {
                 }
                 System.out.println(buttons[c].getPosition() + "I"+ buttons[c].getIsOccupied());
             }
-
+            continueToPlay = true;
             started = true;
         }
     });
