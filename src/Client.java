@@ -1,5 +1,6 @@
 
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -12,37 +13,65 @@ public class Client extends JFrame {
 private int width = 5;
 private int height = 5;
 private boolean started = false;
-
+private int limit = 5;
+private int[] soldiers = new int[limit];
+private int index;
+private String logtxt="cvxcvkm";
 sButton buttons[]=new sButton[25];
 
 public Client() {
+    //Initiating Frame
     super("Veldslagje");
     this.setDefaultCloseOperation(3);
-    this.setSize(1000, 1000);
-
+    Dimension size = new Dimension(450,400);
+    this.setSize(size);
+    this.setPreferredSize(size);
+    //Content Borderlayout
     JPanel content = new JPanel(new BorderLayout());
     this.add(content);
-
+    //Initiating Top bar
     JPanel bar = new JPanel(new FlowLayout());
     content.add(bar, BorderLayout.PAGE_START);
-
+    /*//Creating top bar ComboBox
     String[] playerStrings = {"Player 1", "Player 2"};
     JComboBox players = new JComboBox(playerStrings);
     players.setSelectedIndex(1);
-    bar.add(players, BorderLayout.PAGE_START);
-
+    bar.add(players, BorderLayout.PAGE_START);*/
+    //Creating Connect button
     this.setContentPane(content);
-    JButton connect = new JButton("Connect");
-    connect.addActionListener(new ActionListener() {
+    JButton readybtn = new JButton("Ready");
+    readybtn.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println(players.getSelectedItem().toString());
+            //System.out.println(players.getSelectedItem().toString());
             //zend schip info
+            System.out.println(" 1: "+soldiers[0]+" 2: "+soldiers[1]+" 3: "+soldiers[2]+" 4: "+soldiers[3]+" 5: "+soldiers[4]);
             started = true;
         }
     });
-    bar.add(connect, BorderLayout.PAGE_START);
+    bar.add(readybtn, BorderLayout.NORTH);
+    //Creating reset button
+    JButton reset = new JButton("Reset Selection");
+    reset.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(started==false){
+                soldiers=new int[limit];
+                index=0;
+                for (int q=0; q<25 ;q++){
+                    buttons[q].setImage(0);
+                    buttons[q].setOccupiedMod(0);
+                }
+            }
+        }
+    });
+    bar.add(reset, BorderLayout.NORTH);
+    //Creating top label
+    JLabel toplabel = new JLabel("Zet je soldaten neer!");
+    bar.add(toplabel);
 
+
+    //Creating button grid
     JPanel battle = new JPanel(new GridLayout(5, 5));
     content.add(battle, BorderLayout.CENTER);
 
@@ -52,16 +81,21 @@ public Client() {
 
         battle.add(buttons[i]);
     }
-/*
-        ArrayList yList = new ArrayList();
-        for (int x2=0; x2<5; x2++){
-            ArrayList xList = new ArrayList();
 
-            for
+    //Creating sidepanel with JLabel enInf
+    JPanel sidePanel = new JPanel(new BorderLayout());
+    Dimension sPd = new Dimension(125,300);
+    sidePanel.setPreferredSize(sPd);
+    content.add(sidePanel,BorderLayout.EAST);
 
-            yList.add(x2, xList);
-        }
-*/
+    JLabel logHeader = new JLabel("Log:");
+    sidePanel.add(logHeader,BorderLayout.NORTH);
+
+    JLabel logHeader2 = new JLabel("<html>Geraakte Soldaten:<br> Test</html>");
+    sidePanel.add(logHeader2, BorderLayout.CENTER);
+    this.pack();
+
+    this.setResizable(false);
 
     this.setVisible(true);
 }
@@ -74,14 +108,45 @@ public Client() {
     ImageIcon ship, emptyXY,hitShip;
 
     int position;
-    byte isOccupied=0;
-    //0=empty, 1=ship, 2=hitShip
+    int isOccupied=0;
+    //0=empty, 1=sol, 2=hitSol
     //JButton button = null;
 
+    //Custom Button
     public sButton(int position){
-        emptyXY = new ImageIcon("resource/grass128.png");
         this.position=position;
         this.addActionListener(this);
+        setImage(isOccupied);
+    }
+
+    public void setImage(int isOccupied) {
+        switch (isOccupied) {
+            case 0:
+                try {
+                    Image grs = ImageIO.read(getClass().getResource("resource/gras.png"));
+                    setIcon(new ImageIcon(grs));
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+                break;
+            case 1:
+                try {
+                    Image sol = ImageIO.read(getClass().getResource("resource/sol.png"));
+                    setIcon(new ImageIcon(sol));
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+                break;
+            case 2:
+                try {
+                    Image hitSol = ImageIO.read(getClass().getResource("resource/hitSol.png"));
+                    setIcon(new ImageIcon(hitSol));
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+                break;
+
+        }
     }
         
         public int getPosition() {
@@ -91,6 +156,28 @@ public Client() {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println(getPosition());
+            CoordinatePressed(getPosition());
+
         }
+
+        public void setOccupied(int state){
+            isOccupied = state;
+            setImage(isOccupied);
+            System.out.println("Pressed "+isOccupied);
+            repaint();
+        }
+
+        public void setOccupiedMod (int occ){
+            isOccupied = occ;
+        }
+    }
+
+
+
+    public void CoordinatePressed(int position){
+        if(index<limit&&started==false&&buttons[position].isOccupied==0){
+        soldiers[index]=position;
+        buttons[position].setOccupied(1);
+        index++;}
     }
 }
