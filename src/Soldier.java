@@ -22,5 +22,5 @@ public class Soldier {
 
     public boolean isHit() {
         return isHit;
-    }
+}
 }
