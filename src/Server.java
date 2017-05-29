@@ -3,10 +3,12 @@ import java.net.*;
 import java.util.Date;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class Server extends Application {
     @Override
@@ -19,6 +21,12 @@ public class Server extends Application {
         primaryStage.setTitle("Server");
         primaryStage.setScene(scene);
         primaryStage.show();
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                System.exit(0);
+            }
+        });
 
         new Thread( () -> {
             try {

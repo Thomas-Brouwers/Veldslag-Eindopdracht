@@ -28,6 +28,8 @@ private boolean continueToPlay = false;
 private boolean waiting = true;
 private int playerMove;
 private boolean waitServer = false;
+private boolean playerTurn=true;
+private String player;
 
 sButton buttons[]=new sButton[25];
 
@@ -57,11 +59,13 @@ public Client() {
 
             for (int c = 0; c<25; c++){
                 try{
-                sendMove(buttons[c].getIsOccupied());} catch (IOException ex){
+                    if(started==false) sendMove(buttons[c].getIsOccupied());
+                } catch (IOException ex){
                     ex.printStackTrace();
                 }
                 //System.out.println(buttons[c].getPosition() + "I"+ buttons[c].getIsOccupied());
             }
+
             continueToPlay = true;
             started = true;
         }
@@ -136,23 +140,24 @@ public Client() {
     new Thread(() -> {
             try {
 
-                String player = fromServer.readUTF();
+                player = fromServer.readUTF();
 
-                fromServer.readInt();
+                //if (fromServer.readUTF().equals("go")) {
 
                     while (continueToPlay) {
                         System.out.println(player);
                         if (player.equals("player 1")) {
                             waitForPlayerAction(); // Wait for player 1 to move
-                            fromServer.readInt(); // Send the move to the server
+                            fromServer.readInt();// Send the move to the server
                             receiveInfoFromServer(); // Receive info from the server
                         } else if (player.equals("player 2")) {
                             receiveInfoFromServer(); // Receive info from the server
                             waitForPlayerAction(); // Wait for player 2 to move
-                            sendMove(playerMove); // Send player 2's move to the server
+                            fromServer.readInt(); // Send player 2's move to the server
                         }
                     }
                 }
+            //}
 
             catch (Exception ex) {
                 ex.printStackTrace();
@@ -181,9 +186,13 @@ public Client() {
         toServer.writeInt(position); // Send the selected row
     }
 
+    private void sendZet(int position) throws IOException {
+        toServer.writeInt(position); // Send the selected row
+    }
+
     private void receiveInfoFromServer() throws IOException{
     String status = fromServer.readUTF();
-
+        System.out.println(status);
     if (status.equals("je hebt gewonnen")){
         toplabel.setText("Je hebt gewonnen!");
         //continueToPlay=false;
@@ -266,15 +275,22 @@ public Client() {
         public void actionPerformed(ActionEvent e) {
             System.out.println(getPosition());
             soldierSelect(getPosition());
-            waiting=false;
-            playerMove=getPosition();
-            if(started){
-            try {
-                sendMove(this.getPosition());
-            } catch (IOException e1) {
+                waiting=false;
+                playerMove=getPosition();
+                while(started){
+                try {
+                    if(fromServer.readBoolean()==true&&started){
+                        sendMove(this.getPosition());
+                        playerTurn = false;
+                        break;
+                    }else if(fromServer.readBoolean()==false&&started){
+                        sendMove(this.getPosition());
+                        playerTurn=true;
+                        System.out.println("WAKE ME UP INSIDE");
+                        break;
+                    }} catch (IOException e1) {
                 e1.printStackTrace();
-            }}
-        }
+            }}}
 
         public int getIsOccupied() {
             return isOccupied;

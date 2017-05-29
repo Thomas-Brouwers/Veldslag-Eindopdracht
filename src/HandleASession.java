@@ -21,8 +21,6 @@ import java.net.Socket;
     private DataOutputStream toPlayer2;
 
 
-    private boolean continueToPlay = true;
-
 
     public HandleASession(Socket player1, Socket player2) {
         this.player1 = player1;
@@ -50,12 +48,14 @@ import java.net.Socket;
             System.out.println(" ");
             for (int j = 0; j < 25; j++) {
                 isOccupiedPlayer2[j] = fromPlayer2.readInt();
-                System.out.println(isOccupiedPlayer2[j]);
+                System.out.println(j + "J" + isOccupiedPlayer2[j]);
             }
             toPlayer1.writeInt(1);
 
             while (true) {
                 int movePlayer1 = fromPlayer1.readInt();
+                System.out.println("move from player 1: "+movePlayer1);
+                toPlayer1.writeBoolean(true);
                 if (isOccupiedPlayer2[movePlayer1] == 0)
                     isOccupiedPlayer2[movePlayer1] = 3;
                 else if (isOccupiedPlayer2[movePlayer1] == 1)
@@ -68,14 +68,15 @@ import java.net.Socket;
                     break; // Break the loop
                 } else {
                     // Notify player 2 to take the turn
-                    toPlayer2.writeUTF("speler 2 is aan de beurt");
+                    //toPlayer2.writeUTF("speler 2 is aan de beurt");
 
                     // Send player 1's selected row and column to player 2
-                    sendMove(toPlayer2, movePlayer1);
+                    //sendMove(toPlayer2, movePlayer1);
                 }
 
-                // Receive a move from Player 2
-                int movePlayer2 = fromPlayer1.readInt();
+                int movePlayer2 = fromPlayer2.readInt();
+                System.out.println("move from player 2: "+movePlayer2);
+                toPlayer2.writeBoolean(false);
                 if (isOccupiedPlayer1[movePlayer2] == 0)
                     isOccupiedPlayer1[movePlayer2] = 3;
                 else if (isOccupiedPlayer1[movePlayer2] == 1)
@@ -89,10 +90,10 @@ import java.net.Socket;
                     break;
                 } else {
                     // Notify player 1 to take the turn
-                    toPlayer1.writeUTF("speler 1 is aan de beurt");
+                    //toPlayer1.writeUTF("speler 1 is aan de beurt");
 
                     // Send player 2's selected row and column to player 1
-                    sendMove(toPlayer1, movePlayer2);
+                    //sendMove(toPlayer1, movePlayer2);
                 }
             }
 
@@ -116,15 +117,15 @@ import java.net.Socket;
                 if (isOccupiedPlayer2[i] == 1) {
                     return false;
                 }
-                return true;
             }
+            return true;
         } else if (player.equals("player 2")) {
             for (int i = 0; i < 25; i++) {
                 if (isOccupiedPlayer1[i] == 1) {
                     return false;
                 }
-                return true;
             }
+            return true;
         }
         return false;
     }
