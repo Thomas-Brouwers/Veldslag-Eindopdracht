@@ -141,8 +141,7 @@ public Client() {
             try {
 
                 player = fromServer.readUTF();
-
-                //if (fromServer.readUTF().equals("go")) {
+                if (player.equals("player 1")) waiting =false;
 
                     while (continueToPlay) {
                         System.out.println(player);
@@ -175,8 +174,7 @@ public Client() {
     }
 
     private void waitForPlayerAction() throws InterruptedException {
-        while (waiting) {
-            Thread.sleep(100);
+        while (waiting) { Thread.sleep(100);
         }
 
         waiting = true;
@@ -275,9 +273,17 @@ public Client() {
         public void actionPerformed(ActionEvent e) {
             System.out.println(getPosition());
             soldierSelect(getPosition());
-                waiting=false;
                 playerMove=getPosition();
-                while(started){
+                if(started){
+                    try {
+                        sendMove(this.getPosition());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    //waiting = true;
+                }
+
+                /*while(started){
                 try {
                     if(fromServer.readBoolean()==true&&started){
                         sendMove(this.getPosition());
@@ -290,7 +296,7 @@ public Client() {
                         break;
                     }} catch (IOException e1) {
                 e1.printStackTrace();
-            }}}
+            }}*/}
 
         public int getIsOccupied() {
             return isOccupied;

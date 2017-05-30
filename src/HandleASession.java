@@ -51,11 +51,12 @@ import java.net.Socket;
                 System.out.println(j + "J" + isOccupiedPlayer2[j]);
             }
             toPlayer1.writeInt(1);
+            toPlayer2.writeInt(1);
 
             while (true) {
                 int movePlayer1 = fromPlayer1.readInt();
+                toPlayer1.writeInt(1);
                 System.out.println("move from player 1: "+movePlayer1);
-                toPlayer1.writeBoolean(true);
                 if (isOccupiedPlayer2[movePlayer1] == 0)
                     isOccupiedPlayer2[movePlayer1] = 3;
                 else if (isOccupiedPlayer2[movePlayer1] == 1)
@@ -73,10 +74,9 @@ import java.net.Socket;
                     // Send player 1's selected row and column to player 2
                     //sendMove(toPlayer2, movePlayer1);
                 }
-
                 int movePlayer2 = fromPlayer2.readInt();
+                toPlayer2.writeInt(1);
                 System.out.println("move from player 2: "+movePlayer2);
-                toPlayer2.writeBoolean(false);
                 if (isOccupiedPlayer1[movePlayer2] == 0)
                     isOccupiedPlayer1[movePlayer2] = 3;
                 else if (isOccupiedPlayer1[movePlayer2] == 1)
