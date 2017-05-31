@@ -51,7 +51,6 @@ import java.net.Socket;
                 System.out.println(j + "J" + isOccupiedPlayer2[j]);
             }
             toPlayer1.writeInt(1);
-            toPlayer2.writeInt(1);
 
             while (true) {
                 int movePlayer1 = fromPlayer1.readInt();
@@ -69,10 +68,10 @@ import java.net.Socket;
                     break; // Break the loop
                 } else {
                     // Notify player 2 to take the turn
-                    //toPlayer2.writeUTF("speler 2 is aan de beurt");
+                    toPlayer2.writeInt(2);
 
                     // Send player 1's selected row and column to player 2
-                    //sendMove(toPlayer2, movePlayer1);
+                    sendMove(toPlayer2, movePlayer1);
                 }
                 int movePlayer2 = fromPlayer2.readInt();
                 toPlayer2.writeInt(1);
@@ -84,16 +83,16 @@ import java.net.Socket;
 
                 // Check if Player 2 wins
                 if (isWon("player 2")) {
-                    toPlayer1.writeUTF("speler 2 heeft gewonnen");
-                    toPlayer2.writeUTF("speler 2 heeft gewonnen");
+                    toPlayer1.writeUTF("je hebt verloren");
+                    toPlayer2.writeUTF("je hebt gewonnen");
                     sendMove(toPlayer1, movePlayer2);
                     break;
                 } else {
                     // Notify player 1 to take the turn
-                    //toPlayer1.writeUTF("speler 1 is aan de beurt");
+                    toPlayer1.writeInt(1);
 
                     // Send player 2's selected row and column to player 1
-                    //sendMove(toPlayer1, movePlayer2);
+                    sendMove(toPlayer1, movePlayer2);
                 }
             }
 

@@ -26,7 +26,7 @@ private DataOutputStream toServer;
 private String host = "localhost";
 private boolean continueToPlay = false;
 private boolean waiting = true;
-private int playerMove;
+private boolean myTurn = false;
 private boolean waitServer = false;
 private boolean playerTurn=true;
 private String player;
@@ -137,14 +137,18 @@ public Client() {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    new Thread(() -> {
+
+        new Thread(() -> {
             try {
 
-                player = fromServer.readUTF();
-                if (player.equals("player 1")) waiting =false;
-
+                    player = fromServer.readUTF();
+                    if (player.equals("player 1")) {
+                        fromServer.readInt();
+                        myTurn = true;
+                    } else if(player.equals("player 2")) {
+                        fromServer.readInt();
+                }
                     while (continueToPlay) {
-                        System.out.println(player);
                         if (player.equals("player 1")) {
                             waitForPlayerAction(); // Wait for player 1 to move
                             fromServer.readInt();// Send the move to the server
@@ -155,13 +159,11 @@ public Client() {
                             fromServer.readInt(); // Send player 2's move to the server
                         }
                     }
-                }
-            //}
 
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
-    }).start();
+        }).start();
 
 }
 
@@ -193,12 +195,15 @@ public Client() {
         System.out.println(status);
     if (status.equals("je hebt gewonnen")){
         toplabel.setText("Je hebt gewonnen!");
-        //continueToPlay=false;
+        continueToPlay=false;
         System.out.println("Gewonnen?");
     }else if(status.equals("je hebt verloren")){
         toplabel.setText("Je hebt verloren!");
-        //continueToPlay=false;
+        continueToPlay=false;
         System.out.println("Verloren?");
+    } else {
+        myTurn = true;
+        System.out.println("nieuwe beurt");
     }
 
     }
@@ -273,15 +278,18 @@ public Client() {
         public void actionPerformed(ActionEvent e) {
             System.out.println(getPosition());
             soldierSelect(getPosition());
-                playerMove=getPosition();
-                if(started){
+
                     try {
-                        sendMove(this.getPosition());
+                        if(started && myTurn) {
+                            myTurn = false;
+                            sendMove(this.getPosition());
+                            waiting = false;
+                        }
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
                     //waiting = true;
-                }
+
 
                 /*while(started){
                 try {
