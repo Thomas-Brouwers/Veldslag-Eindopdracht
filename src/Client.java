@@ -45,6 +45,15 @@ public Client() {
     this.setSize(size);
     this.setPreferredSize(size);
 
+    Runnable sound = new Runnable() {
+        @Override
+        public void run() {
+            Sound marsch = new Sound();
+        }
+    };
+
+    new Thread(sound).start();
+
     //Content Borderlayout
     JPanel content = new JPanel(new BorderLayout());
     this.add(content);

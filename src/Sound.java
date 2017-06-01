@@ -1,4 +1,5 @@
 import java.io.File;
+import java.net.URL;
 import javax.sound.sampled.*;
 
 public class Sound extends Thread {
@@ -6,9 +7,10 @@ public class Sound extends Thread {
         play();
     }
 
-    public static void play() {
+    public void play() {
         try{
-            AudioInputStream ais = AudioSystem.getAudioInputStream(new File("C:\\Users\\Trist\\Documents\\Veldslag\\src\\resource\\marsch.wav"));
+            URL url = getClass().getResource("resource/marsch.wav");
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new File(url.getPath()));
             Clip test = AudioSystem.getClip();
 
             test.open(ais);
