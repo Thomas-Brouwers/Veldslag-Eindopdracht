@@ -30,6 +30,7 @@ private boolean myTurn = false;
 private boolean waitServer = false;
 private boolean playerTurn=true;
 private String player;
+private String status= "";
 
 sButton buttons[]=new sButton[25];
 
@@ -65,9 +66,9 @@ public Client() {
                 }
                 //System.out.println(buttons[c].getPosition() + "I"+ buttons[c].getIsOccupied());
             }
-
             continueToPlay = true;
             started = true;
+
         }
     });
     bar.add(readybtn, BorderLayout.NORTH);
@@ -141,28 +142,30 @@ public Client() {
         new Thread(() -> {
             try {
 
-                    player = fromServer.readUTF();
-                    if (player.equals("player 1")) {
-                        fromServer.readInt();
-                        myTurn = true;
-                    } else if(player.equals("player 2")) {
-                        fromServer.readInt();
+                player = fromServer.readUTF();
+                if (player.equals("player 1")) {
+                    fromServer.readInt();
+                    myTurn = true;
+                } else if(player.equals("player 2"))
+                {
+                    fromServer.readInt();
                 }
                     while (continueToPlay) {
                         if (player.equals("player 1")) {
                             waitForPlayerAction(); // Wait for player 1 to move
-                            fromServer.readInt();// Send the move to the server
+                            fromServer.readBoolean();// Send the move to the server
                             receiveInfoFromServer(); // Receive info from the server
                         } else if (player.equals("player 2")) {
                             receiveInfoFromServer(); // Receive info from the server
                             waitForPlayerAction(); // Wait for player 2 to move
-                            fromServer.readInt(); // Send player 2's move to the server
+                            fromServer.readBoolean(); // Send player 2's move to the server
                         }
                     }
 
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+                } catch(Exception ex){
+                    ex.printStackTrace();
+                }
+
         }).start();
 
 }
@@ -176,14 +179,17 @@ public Client() {
     }
 
     private void waitForPlayerAction() throws InterruptedException {
+        waiting = true;
         while (waiting) { Thread.sleep(100);
         }
 
-        waiting = true;
     }
 
     private void sendMove(int position) throws IOException {
+    if(myTurn || !started) {
         toServer.writeInt(position); // Send the selected row
+        myTurn = false;
+    }
     }
 
     private void sendZet(int position) throws IOException {
@@ -191,7 +197,7 @@ public Client() {
     }
 
     private void receiveInfoFromServer() throws IOException{
-    String status = fromServer.readUTF();
+    status = fromServer.readUTF();
         System.out.println(status);
     if (status.equals("je hebt gewonnen")){
         toplabel.setText("Je hebt gewonnen!");
@@ -278,16 +284,15 @@ public Client() {
         public void actionPerformed(ActionEvent e) {
             System.out.println(getPosition());
             soldierSelect(getPosition());
-
-                    try {
-                        if(started && myTurn) {
-                            myTurn = false;
-                            sendMove(this.getPosition());
-                            waiting = false;
-                        }
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
+            if(myTurn) {
+                try {
+                    sendMove(this.getPosition());
+                    waiting = false;
+                    System.out.println("andere beurt");
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
                     //waiting = true;
 
 

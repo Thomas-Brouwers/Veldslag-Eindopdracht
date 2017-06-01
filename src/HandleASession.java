@@ -51,30 +51,31 @@ import java.net.Socket;
                 System.out.println(j + "J" + isOccupiedPlayer2[j]);
             }
             toPlayer1.writeInt(1);
+            toPlayer2.writeInt(2);
 
             while (true) {
                 int movePlayer1 = fromPlayer1.readInt();
-                toPlayer1.writeInt(1);
                 System.out.println("move from player 1: "+movePlayer1);
+                toPlayer1.writeBoolean(true);
                 if (isOccupiedPlayer2[movePlayer1] == 0)
                     isOccupiedPlayer2[movePlayer1] = 3;
                 else if (isOccupiedPlayer2[movePlayer1] == 1)
                     isOccupiedPlayer2[movePlayer1] = 2;
 
                 if (isWon("player 1")) {
+                    System.out.println("eind");
                     toPlayer1.writeUTF("je hebt gewonnen");
                     toPlayer2.writeUTF("je hebt verloren");
-                    sendMove(toPlayer2, movePlayer1);
+                    //sendMove(toPlayer2, movePlayer1);
                     break; // Break the loop
                 } else {
                     // Notify player 2 to take the turn
-                    toPlayer2.writeInt(2);
-
+                    toPlayer2.writeUTF("");
                     // Send player 1's selected row and column to player 2
-                    sendMove(toPlayer2, movePlayer1);
+                   // sendMove(toPlayer2, movePlayer1);
                 }
                 int movePlayer2 = fromPlayer2.readInt();
-                toPlayer2.writeInt(1);
+                toPlayer2.writeBoolean(true);
                 System.out.println("move from player 2: "+movePlayer2);
                 if (isOccupiedPlayer1[movePlayer2] == 0)
                     isOccupiedPlayer1[movePlayer2] = 3;
@@ -83,16 +84,16 @@ import java.net.Socket;
 
                 // Check if Player 2 wins
                 if (isWon("player 2")) {
+                    System.out.println("eind");
                     toPlayer1.writeUTF("je hebt verloren");
                     toPlayer2.writeUTF("je hebt gewonnen");
-                    sendMove(toPlayer1, movePlayer2);
+                    //sendMove(toPlayer1, movePlayer2);
                     break;
                 } else {
                     // Notify player 1 to take the turn
-                    toPlayer1.writeInt(1);
-
+                    toPlayer1.writeUTF("");
                     // Send player 2's selected row and column to player 1
-                    sendMove(toPlayer1, movePlayer2);
+                    //sendMove(toPlayer1, movePlayer2);
                 }
             }
 
