@@ -1,12 +1,16 @@
 
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -35,13 +39,21 @@ private String status= "";
 sButton buttons[]=new sButton[25];
 
 public Client() {
-
     //Initiating Frame
     super("Veldslagje");
     this.setDefaultCloseOperation(3);
     Dimension size = new Dimension(450,400);
     this.setSize(size);
     this.setPreferredSize(size);
+
+    Runnable sound = new Runnable() {
+        @Override
+        public void run() {
+            Sound marsch = new Sound();
+        }
+    };
+
+    new Thread(sound).start();
 
     //Content Borderlayout
     JPanel content = new JPanel(new BorderLayout());
@@ -123,6 +135,8 @@ public Client() {
     this.setVisible(true);
 
     connectToServer();
+
+
 }
 
     private void connectToServer() {
@@ -229,6 +243,9 @@ public Client() {
     /*public int coordinatePressed(int position){
         return position;
     }*/
+
+
+
 
     class sButton extends JButton implements ActionListener {
         ImageIcon ship, emptyXY,hitShip;
