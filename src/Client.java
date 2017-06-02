@@ -13,6 +13,8 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class Client extends JFrame {
@@ -35,6 +37,7 @@ private boolean waitServer = false;
 private boolean playerTurn=true;
 private String player;
 private String status= "";
+private ArrayList<Integer> used = new ArrayList<Integer>();
 
 sButton buttons[]=new sButton[25];
 
@@ -321,9 +324,11 @@ public Client() {
             soldierSelect(getPosition());
             if(myTurn) {
                 try {
-                    sendMove(this.getPosition());
+                    if(used.contains(this.getPosition())){
+                        toplabel.setText("Je hebt hier al geschoten.");}
+                    else{ sendMove(this.getPosition());
                     waiting = false;
-                    System.out.println("andere beurt");
+                    used.add(this.getPosition());}
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
