@@ -70,7 +70,8 @@ import java.net.Socket;
                     break; // Break the loop
                 } else {
                     // Notify player 2 to take the turn
-                    toPlayer2.writeUTF("");
+                    toPlayer2.writeUTF("Het is een gewone zet");
+                    sendMove(toPlayer2, movePlayer1);
                     // Send player 1's selected row and column to player 2
                    // sendMove(toPlayer2, movePlayer1);
                 }
@@ -91,7 +92,8 @@ import java.net.Socket;
                     break;
                 } else {
                     // Notify player 1 to take the turn
-                    toPlayer1.writeUTF("");
+                    toPlayer1.writeUTF("Het is een gewone zet");
+                    sendMove(toPlayer1, movePlayer2);
                     // Send player 2's selected row and column to player 1
                     //sendMove(toPlayer1, movePlayer2);
                 }

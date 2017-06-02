@@ -221,11 +221,22 @@ public Client() {
         toplabel.setText("Je hebt verloren!");
         continueToPlay=false;
         System.out.println("Verloren?");
-    } else {
+    } else if(status.equals("Het is een gewone zet")){
+        receiveMove(fromServer.readInt());
         myTurn = true;
         System.out.println("nieuwe beurt");
     }
 
+    }
+
+    public void receiveMove(int move){
+    if(buttons[move].getIsOccupied()==0){
+        buttons[move].setOccupied(3);
+        buttons[move].setImage(3);
+    }else if(buttons[move].getIsOccupied()==1){
+        buttons[move].setOccupied(2);
+        buttons[move].setImage(2);
+    }
     }
 
 
@@ -289,7 +300,14 @@ public Client() {
                         System.out.println(ex);
                     }
                     break;
-
+                case 3:
+                    try {
+                        Image hitSol = ImageIO.read(getClass().getResource("resource/hitGras.png"));
+                        setIcon(new ImageIcon(hitSol));
+                    } catch (Exception ex) {
+                        System.out.println(ex);
+                    }
+                    break;
             }
         }
 
