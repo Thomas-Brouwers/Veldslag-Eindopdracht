@@ -24,6 +24,7 @@ private int[] soldiers = new int[limit];
 private int index;
 private String logtxt="";
 JLabel toplabel;
+JLabel logHeader2;
 //srvr var
 private DataInputStream fromServer;
 private DataOutputStream toServer;
@@ -123,10 +124,10 @@ public Client() {
     sidePanel.setPreferredSize(sPd);
     content.add(sidePanel,BorderLayout.EAST);
 
-    JLabel logHeader = new JLabel("Log:");
+    JLabel logHeader = new JLabel("Soldaten geraakt op:");
     sidePanel.add(logHeader,BorderLayout.NORTH);
 
-    JLabel logHeader2 = new JLabel("<html>Geraakte Soldaten:<br> Test</html>");
+    logHeader2 = new JLabel("Nog niks");
     sidePanel.add(logHeader2, BorderLayout.CENTER);
     this.pack();
 
@@ -160,6 +161,7 @@ public Client() {
                 if (player.equals("player 1")) {
                     fromServer.readInt();
                     myTurn = true;
+                    toplabel.setText("Je bent aan de beurt!");
                 } else if(player.equals("player 2"))
                 {
                     fromServer.readInt();
@@ -168,11 +170,13 @@ public Client() {
                         if (player.equals("player 1")) {
                             waitForPlayerAction(); // Wait for player 1 to move
                             fromServer.readBoolean();// Send the move to the server
+                            toplabel.setText("De tegenstander is aan de beurt.");
                             receiveInfoFromServer(); // Receive info from the server
                         } else if (player.equals("player 2")) {
                             receiveInfoFromServer(); // Receive info from the server
                             waitForPlayerAction(); // Wait for player 2 to move
                             fromServer.readBoolean(); // Send player 2's move to the server
+                            toplabel.setText("De tegenstander is aan de beurt.");
                         }
                     }
 
@@ -225,9 +229,19 @@ public Client() {
         receiveMove(fromServer.readInt());
         myTurn = true;
         System.out.println("nieuwe beurt");
+        toplabel.setText("Je bent aan de beurt!");
     }
 
     }
+
+    /*public void hitOrNot(int coord){
+        try {
+            String answer = fromServer.readUTF();
+            if (answer.equals("Hit")){logHeader2.setText(""+coord);};
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
 
     public void receiveMove(int move){
     if(buttons[move].getIsOccupied()==0){
@@ -322,8 +336,9 @@ public Client() {
             if(myTurn) {
                 try {
                     sendMove(this.getPosition());
+                    //hitOrNot(this.getPosition());
                     waiting = false;
-                    System.out.println("andere beurt");
+                    //System.out.println("andere beurt");
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
