@@ -55,6 +55,13 @@ import java.net.Socket;
 
             while (true) {
                 int movePlayer1 = fromPlayer1.readInt();
+
+                if(isOccupiedPlayer2[movePlayer1]==1) {
+                    System.out.println("Detected hit to player 2");
+                    toPlayer1.writeUTF("Hit");
+                } else {toPlayer1.writeUTF("Miss");}
+
+
                 System.out.println("move from player 1: "+movePlayer1);
                 toPlayer1.writeBoolean(true);
                 if (isOccupiedPlayer2[movePlayer1] == 0)
@@ -76,6 +83,12 @@ import java.net.Socket;
                    // sendMove(toPlayer2, movePlayer1);
                 }
                 int movePlayer2 = fromPlayer2.readInt();
+
+                if(isOccupiedPlayer1[movePlayer2]==1) {
+                    System.out.println("Detected hit to player 1");
+                    toPlayer2.writeUTF("Hit");
+                } else {toPlayer2.writeUTF("Miss");}
+
                 toPlayer2.writeBoolean(true);
                 System.out.println("move from player 2: "+movePlayer2);
                 if (isOccupiedPlayer1[movePlayer2] == 0)
