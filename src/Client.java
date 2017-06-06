@@ -191,12 +191,16 @@ public class Client extends JFrame {
         System.out.println(status);
         if (status.equals("je hebt gewonnen")) {
             toplabel.setText("Je hebt gewonnen!");
+            for(int i = 0; i < buttons.length; i++){
+                buttons[i].setImage(1);
+            }
             continueToPlay = false;
-            System.out.println("Gewonnen?");
         } else if (status.equals("je hebt verloren")) {
             toplabel.setText("Je hebt verloren!");
             continueToPlay = false;
-            System.out.println("Verloren?");
+            for(int i = 0; i < buttons.length; i++){
+                buttons[i].setImage(3);
+            }
         } else if (status.equals("Het is een gewone zet")) {
             receiveMove(fromServer.readInt());
             myTurn = true;
