@@ -35,6 +35,7 @@ public class Server extends Application {
                 Platform.runLater(() ->
                         ta.appendText("Server started at " + new Date() + '\n'));
 
+
                 while (true) {
                     Platform.runLater(() -> ta.appendText(new Date() +
                             ": Wait for players to join session " + '\n'));

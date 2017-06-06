@@ -31,13 +31,13 @@ import java.net.Socket;
     public void run() {
         try {
 
-            DataInputStream fromPlayer1 = new DataInputStream(
+            fromPlayer1 = new DataInputStream(
                     player1.getInputStream());
-            DataOutputStream toPlayer1 = new DataOutputStream(
+            toPlayer1 = new DataOutputStream(
                     player1.getOutputStream());
-            DataInputStream fromPlayer2 = new DataInputStream(
+            fromPlayer2 = new DataInputStream(
                     player2.getInputStream());
-            DataOutputStream toPlayer2 = new DataOutputStream(
+            toPlayer2 = new DataOutputStream(
                     player2.getOutputStream());
 
 
@@ -73,14 +73,10 @@ import java.net.Socket;
                     System.out.println("eind");
                     toPlayer1.writeUTF("je hebt gewonnen");
                     toPlayer2.writeUTF("je hebt verloren");
-                    //sendMove(toPlayer2, movePlayer1);
-                    break; // Break the loop
+                    break;
                 } else {
-                    // Notify player 2 to take the turn
                     toPlayer2.writeUTF("Het is een gewone zet");
                     sendMove(toPlayer2, movePlayer1);
-                    // Send player 1's selected row and column to player 2
-                   // sendMove(toPlayer2, movePlayer1);
                 }
                 int movePlayer2 = fromPlayer2.readInt();
 
@@ -96,19 +92,14 @@ import java.net.Socket;
                 else if (isOccupiedPlayer1[movePlayer2] == 1)
                     isOccupiedPlayer1[movePlayer2] = 2;
 
-                // Check if Player 2 wins
                 if (isWon("player 2")) {
                     System.out.println("eind");
                     toPlayer1.writeUTF("je hebt verloren");
                     toPlayer2.writeUTF("je hebt gewonnen");
-                    //sendMove(toPlayer1, movePlayer2);
                     break;
                 } else {
-                    // Notify player 1 to take the turn
                     toPlayer1.writeUTF("Het is een gewone zet");
                     sendMove(toPlayer1, movePlayer2);
-                    // Send player 2's selected row and column to player 1
-                    //sendMove(toPlayer1, movePlayer2);
                 }
             }
 
@@ -117,13 +108,9 @@ import java.net.Socket;
         }
     }
 
-    /**
-     * Send the move to other player
-     */
     private void sendMove(DataOutputStream out, int move)
             throws IOException {
-        out.writeInt(move); // Send button index
-
+        out.writeInt(move);
     }
 
     private boolean isWon(String player) {
