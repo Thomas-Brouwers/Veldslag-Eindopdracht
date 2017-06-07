@@ -188,7 +188,6 @@ public class Client extends JFrame {
 
     private void receiveInfoFromServer() throws IOException {
         status = fromServer.readUTF();
-        System.out.println(status);
         if (status.equals("je hebt gewonnen")) {
             toplabel.setText("Je hebt gewonnen!");
             for(int i = 0; i < buttons.length; i++){
@@ -204,7 +203,6 @@ public class Client extends JFrame {
         } else if (status.equals("Het is een gewone zet")) {
             receiveMove(fromServer.readInt());
             myTurn = true;
-            System.out.println("nieuwe beurt");
             toplabel.setText("Je bent aan de beurt!");
         }
 
@@ -288,7 +286,6 @@ public class Client extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println(getPosition());
             soldierSelect(getPosition());
             if (myTurn) {
                 try {

@@ -45,12 +45,10 @@ import java.net.Socket;
 
             for (int i = 0; i < 25; i++) {
                 isOccupiedPlayer1[i] = fromPlayer1.readInt();
-                System.out.println(i + "I" + isOccupiedPlayer1[i]);
             }
-            System.out.println(" ");
+
             for (int j = 0; j < 25; j++) {
                 isOccupiedPlayer2[j] = fromPlayer2.readInt();
-                System.out.println(j + "J" + isOccupiedPlayer2[j]);
             }
             toPlayer1.writeInt(1);
             toPlayer2.writeInt(2);
@@ -120,7 +118,6 @@ import java.net.Socket;
                 if (isOccupiedPlayer2[btnnbr] == 1) {
                     return false;
                 } else {
-                    System.out.println("speler 1 button " + btnnbr + "status" + isOccupiedPlayer2[btnnbr]);
                     btnnbr++;
                     return isWon(player);
                 }
@@ -133,7 +130,6 @@ import java.net.Socket;
                 if (isOccupiedPlayer1[btnnbr] == 1) {
                     return false;
                 } else {
-                    System.out.println("speler 2 button " + btnnbr + "status" + isOccupiedPlayer1[btnnbr]);
                     btnnbr++;
                     return isWon(player);
                 }
